@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vodka Production Calculator</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --panel-2: #182338;
+      --border: #2a3957;
+      --text: #e8eefc;
+      --muted: #9cb0d3;
+      --accent: #4da3ff;
+      --accent-2: #7dd3fc;
+      --good: #4ade80;
+      --warn: #f59e0b;
+      --bad: #fb7185;
+      --input: #0f172a;
+      --shadow: 0 10px 35px rgba(0,0,0,.35);
+      --radius: 20px;
+    }
+
+    
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(77,163,255,.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(125,211,252,.12), transparent 22%),
+        linear-gradient(180deg, #08101d 0%, #0b1220 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      line-height: 1.05;
+      letter-spacing: -.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 800px;
+      line-height: 1.5;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .badge {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--accent-2);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 22px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,0));
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -.01em;
+    }
+
+    .card-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .card-content {
+      padding: 18px 20px 20px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--accent-2);
+      margin: 0 0 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: .15s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(77,163,255,.16);
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--input);
+    }
+
+    .checkbox-row .copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .checkbox-row .copy strong {
+      font-size: 14px;
+    }
+
+    .checkbox-row .copy span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      background: linear-gradient(180deg, rgba(77,163,255,.08), rgba(77,163,255,.03));
+      border: 1px solid rgba(77,163,255,.18);
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 112px;
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+
+    .metric .value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.05;
+      margin-bottom: 6px;
+    }
+
+    .metric .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .95fr;
+      gap: 18px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .table td.num,
+    .table th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .kpi-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.02);
+    }
+
+    .kpi-row .name {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .kpi-row .val {
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .callout {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(74,222,128,.08);
+      border: 1px solid rgba(74,222,128,.16);
+      color: #d7ffe5;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 16px;
+    }
+
+    .callout.warn {
+      background: rgba(245,158,11,.08);
+      border-color: rgba(245,158,11,.18);
+      color: #ffefcc;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .pill.good { color: var(--good); }
+    .pill.warn { color: var(--warn); }
+
+    @media (max-width: 1180px) {
+      .grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .result-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .container { padding: 16px; }
+      .hero { flex-direction: column; }
+      .form-grid,
+      .metrics { grid-template-columns: 1fr; }
+      .metric .value { font-size: 24px; }
+      .hero h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <div>
+        <h1>Vodka Production Calculator</h1>
+        <p>Single-file calculator for pocket optimisation, production planning, yield scaling, multi-run totals, and profit-per-hour modelling. Change any assumptions live and the dashboard updates instantly.</p>
+        <div class="badge-row">
+          <div class="badge">1 file</div>
+          <div class="badge">HTML + CSS + JS</div>
+          <div class="badge">Live optimiser</div>
+          <div class="badge">Editable assumptions</div>
+        </div>
+      </div>
+      <div class="pill good" id="statusPill">Ready</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h2>Inputs & Assumptions</h2>
+          <p>Set your pocket space, choose a production step, adjust timings, yield, sale price, and level/speed boosts.</p>
+        </div>
+        <div class="card-content">
+          <div class="section-title">Pocket & Run Setup</div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="pocketCapacity">Pocket capacity (kg)</label>
+              <input id="pocketCapacity" type="number" step="0.001" value="38" />
+            </div>
+            <div class="field">
+              <label for="currentWeight">Current weight carried (kg)</label>
+              <input id="currentWeight" type="number" step="0.001" value="6.07" />
+            </div>
+            <div class="field full">
+              <label for="step">Step</label>
+              <select id="step">
+                <option value="mashing">Mashing - 5 Potato + 1 Water → 1 Mash</option>
+                <option value="fermenting">Fermenting - 5 Mash + 1 Water + 1 Yeast → 1 Fermented</option>
+                <option value="distilling">Distilling - 5 Fermented → 1 Spirit</option>
+                <option value="bottling">Bottling - 1 Spirit + 20 Blueberries + 65 Bottles → Bottles</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="runs">Number of pocket runs</label>
+              <input id="runs" type="number" min="1" step="1" value="1" />
+            </div>
+            <div class="field">
+              <label for="salePrice">Bottle sale price ($)</label>
+              <input id="salePrice" type="number" step="1" value="81" />
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top:22px;">Yield & Distillery Scaling</div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="yieldMultiplier">Yield multiplier</label>
+              <input id="yieldMultiplier" type="number" step="0.0001" value="1.5053" />
+            </div>
+            <div class="field">
+              <label for="bottlesPerSpirit">Bottle output per spirit</label>
+              <input id="bottlesPerSpirit" type="number" step="0.1" value="58" />
+            </div>
+            <div class="field">
+              <label for="distilleryLevel">Distillery level multiplier</label>
+              <input id="distilleryLevel" type="number" step="0.01" value="1" />
+            </div>
+            <div class="field">
+              <label for="speedMultiplier">Mashing/Fermenting speed multiplier</label>
+              <input id="speedMultiplier" type="number" step="0.01" value="5.2" />
+            </div>
+            <div class="field full">
+              <div class="checkbox-row">
+                <div class="copy">
+                  <strong>Enable speedup</strong>
+                  <span>Only affects Mashing and Fermenting, not Distilling or Bottling.</span>
+                </div>
+                <input id="useSpeedup" type="checkbox" checked />
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top:22px;">Craft Times (editable)</div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="timeMashing">Mashing seconds per craft</label>
+              <input id="timeMashing" type="number" step="0.1" value="11" />
+            </div>
+            <div class="field">
+              <label for="timeFermenting">Fermenting seconds per craft</label>
+              <input id="timeFermenting" type="number" step="0.1" value="11" />
+            </div>
+            <div class="field">
+              <label for="timeDistilling">Distilling seconds per craft</label>
+              <input id="timeDistilling" type="number" step="0.1" value="14" />
+            </div>
+            <div class="field">
+              <label for="timeBottling">Bottling seconds per spirit</label>
+              <input id="timeBottling" type="number" step="0.1" value="20" />
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top:22px;">Item Weights (kg)</div>
+          <div class="form-grid">
+            <div class="field"><label for="wPotato">Potato</label><input id="wPotato" type="number" step="0.001" value="0.005" /></div>
+            <div class="field"><label for="wWater">Water</label><input id="wWater" type="number" step="0.001" value="0.1" /></div>
+            <div class="field"><label for="wYeast">Yeast</label><input id="wYeast" type="number" step="0.001" value="0.005" /></div>
+            <div class="field"><label for="wBlueberry">Blueberry</label><input id="wBlueberry" type="number" step="0.001" value="0.005" /></div>
+            <div class="field"><label for="wMash">Mash</label><input id="wMash" type="number" step="0.001" value="0.025" /></div>
+            <div class="field"><label for="wFermented">Fermented</label><input id="wFermented" type="number" step="0.001" value="0.125" /></div>
+            <div class="field"><label for="wSpirit">Spirit</label><input id="wSpirit" type="number" step="0.001" value="1.5" /></div>
+            <div class="field"><label for="wBottle">Empty bottle</label><input id="wBottle" type="number" step="0.001" value="0.01" /></div>
+          </div>
+
+          <div class="footer-note">
+            Yield multiplier models the ingredient-stretch behaviour you described. Example: 281 nominal crafts producing 423 output means a multiplier of about 1.5053x. Time still follows nominal crafts, not boosted output.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="label">Available Weight</div>
+            <div class="value" id="mAvailableWeight">0.000 kg</div>
+            <div class="sub" id="mWeightUsage">0.000 kg used</div>
+          </div>
+          <div class="metric">
+            <div class="label">Max Full Crafts / Run</div>
+            <div class="value" id="mCrafts">0</div>
+            <div class="sub" id="mPrimaryOutput">0 primary output</div>
+          </div>
+          <div class="metric">
+            <div class="label">Expected Revenue / Run</div>
+            <div class="value" id="mRevenueRun">$0</div>
+            <div class="sub" id="mRevenueHour">$0 per hour</div>
+          </div>
+          <div class="metric">
+            <div class="label">Expected Revenue / Total</div>
+            <div class="value" id="mRevenueTotal">$0</div>
+            <div class="sub" id="mTotalTime">0h 0m 0s total time</div>
+          </div>
+          <div class="hidden">
+            <div class="label">True End-to-End Profit / Hour</div>
+            <div class="value" id="mEndToEndPH"></div>
+            <div class="sub" id="mEndToEndTime">0h 0m 0s from potatoes to bottles</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px;">
+          <div class="card-header">
+            <h2>Optimised Pickup Plan</h2>
+            <p>The calculator fills the selected recipe as tightly as possible with full crafts only, then shows exact ingredients to pick up for one run and for all runs.</p>
+          </div>
+          <div class="card-content result-grid">
+            <div>
+              <table class="table" id="ingredientTable">
+                <thead>
+                  <tr>
+                    <th>Ingredient</th>
+                    <th class="num">Per Craft</th>
+                    <th class="num">Per Run Qty</th>
+                    <th class="num">Per Run kg</th>
+                    <th class="num">All Runs Qty</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div>
+              <div class="kpi-list">
+                <div class="kpi-row"><div class="name">Primary Output Type</div><div class="val" id="kPrimaryType">-</div></div>
+                <div class="kpi-row"><div class="name">Primary Output / Run</div><div class="val" id="kPrimaryQty">0</div></div>
+                <div class="kpi-row"><div class="name">Equivalent Spirits / Run</div><div class="val" id="kSpirits">0</div></div>
+                <div class="kpi-row"><div class="name">Expected Bottles / Run</div><div class="val" id="kBottles">0</div></div>
+                <div class="kpi-row"><div class="name">Unused Weight / Run</div><div class="val" id="kUnused">0.000 kg</div></div>
+                <div class="kpi-row"><div class="name">Time / Run</div><div class="val" id="kRunTime">0h 0m 0s</div></div>
+              </div>
+              <div class="callout" id="calloutGood"></div>
+              <div class="callout warn" id="calloutWarn"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Production Chain Summary</h2>
+            <p>Useful when you want to understand both the selected-step run and the true full chain from potatoes to final bottles.</p>
+          </div>
+          <div class="card-content result-grid">
+            <div>
+              <div class="kpi-list">
+                <div class="kpi-row"><div class="name">Nominal crafts / run</div><div class="val" id="sNominalCrafts">0</div></div>
+                <div class="kpi-row"><div class="name">Yield-adjusted primary output / run</div><div class="val" id="sAdjustedPrimary">0</div></div>
+                <div class="kpi-row"><div class="name">Equivalent fermented / run</div><div class="val" id="sFermentedEq">0</div></div>
+                <div class="kpi-row"><div class="name">Equivalent spirits / run</div><div class="val" id="sSpiritsEq">0</div></div>
+                <div class="kpi-row"><div class="name">Expected bottles / run</div><div class="val" id="sBottlesEq">0</div></div>
+                <div class="kpi-row"><div class="name">Revenue / kg used</div><div class="val" id="sRevenuePerKg">$0</div></div>
+                <div class="kpi-row"><div class="name">True end-to-end time / run</div><div class="val" id="sEndToEndTime">0h 0m 0s</div></div>
+                <div class="kpi-row"><div class="name">True end-to-end profit / hour</div><div class="val" id="sEndToEndPH">$0</div></div>
+              </div>
+            </div>
+            <div>
+              <div class="small">
+                <p><strong>Recipe logic</strong></p>
+                <p>Mashing: 5 Potato + 1 Water → 1 Mash</p>
+                <p>Fermenting: 5 Mash + 1 Water + 1 Yeast → 1 Fermented</p>
+                <p>Distilling: 5 Fermented → 1 Spirit</p>
+                <p>Bottling: 1 Spirit + 20 Blueberries + 65 Bottles → bottle output based on your setting</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const fields = [
+      'pocketCapacity','currentWeight','step','runs','salePrice','yieldMultiplier','bottlesPerSpirit',
+      'distilleryLevel','speedMultiplier','useSpeedup','timeMashing','timeFermenting','timeDistilling',
+      'timeBottling','wPotato','wWater','wYeast','wBlueberry','wMash','wFermented','wSpirit','wBottle'
+    ];
+
+    const recipes = {
+      mashing: {
+        label: 'Mash',
+        ingredients: [
+          { name: 'Potato', qty: 5, weightKey: 'wPotato' },
+          { name: 'Water', qty: 1, weightKey: 'wWater' }
+        ],
+        timeKey: 'timeMashing',
+        useYield: true,
+        allowSpeed: true,
+        primaryFromCrafts: (crafts, boost) => crafts * boost,
+        spiritsFromPrimary: (primary) => primary / 25,
+        fermentedFromPrimary: (primary) => primary / 5
+      },
+      fermenting: {
+        label: 'Fermented',
+        ingredients: [
+          { name: 'Mash', qty: 5, weightKey: 'wMash' },
+          { name: 'Water', qty: 1, weightKey: 'wWater' },
+          { name: 'Yeast', qty: 1, weightKey: 'wYeast' }
+        ],
+        timeKey: 'timeFermenting',
+        useYield: true,
+        allowSpeed: true,
+        primaryFromCrafts: (crafts, boost) => crafts * boost,
+        spiritsFromPrimary: (primary) => primary / 5,
+        fermentedFromPrimary: (primary) => primary
+      },
+      distilling: {
+        label: 'Spirit',
+        ingredients: [
+          { name: 'Fermented', qty: 5, weightKey: 'wFermented' }
+        ],
+        timeKey: 'timeDistilling',
+        useYield: false,
+        allowSpeed: false,
+        primaryFromCrafts: (crafts) => crafts,
+        spiritsFromPrimary: (primary) => primary,
+        fermentedFromPrimary: (primary) => primary * 5
+      },
+      bottling: {
+        label: 'Bottles',
+        ingredients: [
+          { name: 'Spirit', qty: 1, weightKey: 'wSpirit' },
+          { name: 'Blueberries', qty: 20, weightKey: 'wBlueberry' },
+          { name: 'Empty Bottles', qty: 65, weightKey: 'wBottle' }
+        ],
+        timeKey: 'timeBottling',
+        useYield: false,
+        allowSpeed: false,
+        primaryFromCrafts: (crafts, boost, inputs) => crafts * num(inputs.bottlesPerSpirit),
+        spiritsFromPrimary: (primary, crafts) => crafts,
+        fermentedFromPrimary: (primary, crafts) => crafts * 5
+      }
+    };
+
+    function num(v) {
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function getInputs() {
+      const out = {};
+      for (const id of fields) {
+        const el = $(id);
+        out[id] = el.type === 'checkbox' ? el.checked : el.value;
+      }
+      return out;
+    }
+
+    function formatNumber(n, decimals = 2) {
+      return n.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function formatMoney(n, decimals = 0) {
+      return '$' + n.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function formatTime(seconds) {
+      const s = Math.max(0, Math.round(seconds));
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      return `${h}h ${m}m ${sec}s`;
+    }
+
+    function calculate() {
+      const inputs = getInputs();
+      const recipe = recipes[inputs.step];
+      const availableWeight = Math.max(0, num(inputs.pocketCapacity) - num(inputs.currentWeight));
+      const runs = Math.max(1, Math.floor(num(inputs.runs) || 1));
+      const yieldMultiplier = Math.max(0, num(inputs.yieldMultiplier));
+      const levelMultiplier = Math.max(0, num(inputs.distilleryLevel) || 1);
+      const bottlesPerSpirit = Math.max(0, num(inputs.bottlesPerSpirit));
+      const salePrice = Math.max(0, num(inputs.salePrice));
+
+      let perCraftWeight = 0;
+      const ingredients = recipe.ingredients.map(item => {
+        const weight = num(inputs[item.weightKey]);
+        perCraftWeight += item.qty * weight;
+        return { ...item, unitWeight: weight, perCraftWeight: item.qty * weight };
+      });
+
+      const craftsByInputs = perCraftWeight > 0 ? Math.floor(availableWeight / perCraftWeight) : 0;
+
+      let outputWeightPerCraft = 0;
+      if (inputs.step === 'distilling') {
+        outputWeightPerCraft = num(inputs.wSpirit);
+      } else if (inputs.step === 'bottling') {
+        outputWeightPerCraft = num(inputs.wBottle) * bottlesPerSpirit;
+      }
+
+      const craftsByOutput = outputWeightPerCraft > 0
+        ? Math.floor(availableWeight / outputWeightPerCraft)
+        : craftsByInputs;
+
+      const crafts = Math.min(craftsByInputs, craftsByOutput);
+      const usedWeight = crafts * perCraftWeight;
+      const unusedWeight = Math.max(0, availableWeight - usedWeight);
+
+      const productionBoost = recipe.useYield ? yieldMultiplier * levelMultiplier : levelMultiplier;
+      const primaryOutput = recipe.primaryFromCrafts(crafts, productionBoost, inputs);
+      const equivalentSpirits = inputs.step === 'bottling'
+        ? crafts
+        : recipe.spiritsFromPrimary(primaryOutput, crafts, inputs);
+      const equivalentFermented = recipe.fermentedFromPrimary(primaryOutput, crafts, inputs);
+      const expectedBottles = inputs.step === 'bottling'
+        ? primaryOutput
+        : equivalentSpirits * bottlesPerSpirit;
+
+      const timeBase = num(inputs[recipe.timeKey]);
+      const timeSpeed = (recipe.allowSpeed && inputs.useSpeedup) ? Math.max(1, num(inputs.speedMultiplier) || 1) : 1;
+      const timePerCraft = timeBase / timeSpeed;
+      const timePerRun = crafts * timePerCraft;
+      const totalTime = timePerRun * runs;
+
+      const revenuePerRun = expectedBottles * salePrice;
+      const revenueTotal = revenuePerRun * runs;
+      const revenuePerHour = totalTime > 0 ? revenueTotal / (totalTime / 3600) : 0;
+      const revenuePerKg = usedWeight > 0 ? revenuePerRun / usedWeight : 0;
+
+      const timeMashing = num(inputs.timeMashing) / ((inputs.useSpeedup && num(inputs.speedMultiplier) > 0) ? Math.max(1, num(inputs.speedMultiplier)) : 1);
+      const timeFermenting = num(inputs.timeFermenting) / ((inputs.useSpeedup && num(inputs.speedMultiplier) > 0) ? Math.max(1, num(inputs.speedMultiplier)) : 1);
+      const timeDistilling = num(inputs.timeDistilling);
+      const timeBottling = num(inputs.timeBottling);
+
+      const rawMashCraftWeight = (5 * num(inputs.wPotato)) + (1 * num(inputs.wWater));
+      const trueMashCrafts = rawMashCraftWeight > 0 ? Math.floor(availableWeight / rawMashCraftWeight) : 0;
+      const trueMashOutput = trueMashCrafts * yieldMultiplier * levelMultiplier;
+      const trueFermentedOutput = trueMashOutput / 5;
+      const trueSpiritsOutput = trueFermentedOutput / 5;
+      const trueBottlesOutput = trueSpiritsOutput * bottlesPerSpirit;
+      const trueEndToEndTimePerRun =
+        (trueMashCrafts * timeMashing) +
+        (trueFermentedOutput * timeFermenting) +
+        (trueSpiritsOutput * timeDistilling) +
+        (trueSpiritsOutput * timeBottling);
+      const trueEndToEndTotalTime = trueEndToEndTimePerRun * runs;
+      const trueEndToEndRevenuePerRun = trueBottlesOutput * salePrice;
+      const trueEndToEndRevenueTotal = trueEndToEndRevenuePerRun * runs;
+      const trueEndToEndProfitPerHour = trueEndToEndTotalTime > 0
+        ? trueEndToEndRevenueTotal / (trueEndToEndTotalTime / 3600)
+        : 0;
+
+      return {
+        recipe,
+        ingredients,
+        availableWeight,
+        crafts,
+        usedWeight,
+        unusedWeight,
+        runs,
+        primaryOutput,
+        equivalentSpirits,
+        equivalentFermented,
+        expectedBottles,
+        revenuePerRun,
+        revenueTotal,
+        revenuePerHour,
+        revenuePerKg,
+        timePerRun,
+        totalTime,
+        timePerCraft,
+        perCraftWeight,
+        productionBoost,
+        trueMashCrafts,
+        trueMashOutput,
+        trueFermentedOutput,
+        trueSpiritsOutput,
+        trueBottlesOutput,
+        trueEndToEndTimePerRun,
+        trueEndToEndTotalTime,
+        trueEndToEndRevenuePerRun,
+        trueEndToEndRevenueTotal,
+        trueEndToEndProfitPerHour
+      };
+    }
+
+    function render() {
+      const r = calculate();
+
+      $('mAvailableWeight').textContent = formatNumber(r.availableWeight, 3) + ' kg';
+      $('mWeightUsage').textContent = `${formatNumber(r.usedWeight, 3)} kg used • ${formatNumber(r.unusedWeight, 3)} kg spare`;
+      $('mCrafts').textContent = formatNumber(r.crafts, 0);
+      $('mPrimaryOutput').textContent = `${formatNumber(r.primaryOutput, 2)} ${r.recipe.label.toLowerCase()}`;
+      $('mRevenueRun').textContent = formatMoney(r.revenuePerRun, 0);
+      $('mRevenueHour').textContent = `${formatMoney(r.revenuePerHour, 0)} per hour`;
+      $('mRevenueTotal').textContent = formatMoney(r.revenueTotal, 0);
+      $('mTotalTime').textContent = `${formatTime(r.totalTime)} selected-step time`;
+      $('mEndToEndPH').textContent = formatMoney(r.trueEndToEndProfitPerHour, 0);
+      $('mEndToEndTime').textContent = `${formatTime(r.trueEndToEndTotalTime)} from potatoes to bottles`;
+
+      $('kPrimaryType').textContent = r.recipe.label;
+      $('kPrimaryQty').textContent = formatNumber(r.primaryOutput, 2);
+      $('kSpirits').textContent = formatNumber(r.equivalentSpirits, 2);
+      $('kBottles').textContent = formatNumber(r.expectedBottles, 2);
+      $('kUnused').textContent = formatNumber(r.unusedWeight, 3) + ' kg';
+      $('kRunTime').textContent = formatTime(r.timePerRun);
+
+      $('sNominalCrafts').textContent = formatNumber(r.crafts, 0);
+      $('sAdjustedPrimary').textContent = formatNumber(r.primaryOutput, 2);
+      $('sFermentedEq').textContent = formatNumber(r.equivalentFermented, 2);
+      $('sSpiritsEq').textContent = formatNumber(r.equivalentSpirits, 2);
+      $('sBottlesEq').textContent = formatNumber(r.expectedBottles, 2);
+      $('sRevenuePerKg').textContent = formatMoney(r.revenuePerKg, 2);
+      $('sEndToEndTime').textContent = formatTime(r.trueEndToEndTimePerRun);
+      $('sEndToEndPH').textContent = formatMoney(r.trueEndToEndProfitPerHour, 0);
+
+      const tbody = document.querySelector('#ingredientTable tbody');
+      tbody.innerHTML = '';
+      r.ingredients.forEach(item => {
+        const tr = document.createElement('tr');
+        const perRunQty = item.qty * r.crafts;
+        const perRunKg = item.perCraftWeight * r.crafts;
+        const allRunsQty = perRunQty * r.runs;
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td class="num">${formatNumber(item.qty, 0)}</td>
+          <td class="num">${formatNumber(perRunQty, 0)}</td>
+          <td class="num">${formatNumber(perRunKg, 3)}</td>
+          <td class="num">${formatNumber(allRunsQty, 0)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      $('calloutGood').textContent = `Selected step plan: ${formatNumber(r.crafts, 0)} full crafts uses ${formatNumber(r.usedWeight, 3)} kg and gives ${formatNumber(r.primaryOutput, 2)} ${r.recipe.label.toLowerCase()}. True end-to-end from raw ingredients is calculated separately and stays the same across dropdown changes.`;
+      $('calloutWarn').textContent = r.unusedWeight > 0
+        ? `There is ${formatNumber(r.unusedWeight, 3)} kg of leftover capacity. That is normal because the optimiser only uses whole crafts and will not overfill the pocket.`
+        : `Pocket space is fully utilised for whole-craft optimisation at this recipe weight.`;
+
+      $('statusPill').textContent = r.crafts > 0 ? 'Live calculation active' : 'No valid crafts';
+      $('statusPill').className = 'pill ' + (r.crafts > 0 ? 'good' : 'warn');
+    }
+
+    fields.forEach(id => {
+      const el = $(id);
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    });
+
+    render();
+  </script>
+</body>
+</html>
