@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vodka Production Calculator</title>
+  <title>MandemZ Vodka Pocket Optimizer</title>
   <style>
     :root {
       --bg: #0b1220;
@@ -21,8 +21,6 @@
       --shadow: 0 10px 35px rgba(0,0,0,.35);
       --radius: 20px;
     }
-
-    
 
     * { box-sizing: border-box; }
 
@@ -100,10 +98,6 @@
       padding: 18px 20px;
       border-bottom: 1px solid rgba(255,255,255,.06);
       background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,0));
-    }
-
-    .hidden {
-      display: none !important;
     }
 
     .card-header h2 {
@@ -272,6 +266,83 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .copy-cell {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      background: rgba(255,255,255,.025);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 9px;
+      cursor: pointer;
+      flex: 0 0 auto;
+      transition: .18s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--accent-2);
+      background: rgba(77,163,255,.08);
+      border-color: rgba(77,163,255,.18);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0,0,0,.18);
+    }
+
+    .copy-btn:active {
+      transform: translateY(0);
+    }
+
+    .copy-btn:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(77,163,255,.16);
+    }
+
+    .copy-icon,
+    .copy-check {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: .18s ease;
+      pointer-events: none;
+    }
+
+    .copy-check {
+      opacity: 0;
+      transform: scale(.72);
+    }
+
+    .copy-btn.copied {
+      color: var(--good);
+      background: rgba(74,222,128,.1);
+      border-color: rgba(74,222,128,.22);
+    }
+
+    .copy-btn.copied .copy-icon {
+      opacity: 0;
+      transform: scale(.72);
+    }
+
+    .copy-btn.copied .copy-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
     .kpi-list {
       display: grid;
       gap: 10px;
@@ -359,15 +430,521 @@
       .metric .value { font-size: 24px; }
       .hero h1 { font-size: 28px; }
     }
-  </style>
+  
+/* --- MandemZ cleaned working layout --- */
+body{
+  background:
+    radial-gradient(900px 420px at 100% 0%, rgba(255,0,114,.10), transparent 34%),
+    radial-gradient(780px 420px at 0% 0%, rgba(125,211,252,.11), transparent 34%),
+    linear-gradient(180deg, #050912 0%, #0b1220 100%);
+}
+.container{max-width:1380px;}
+.hero{
+  margin-bottom:18px;
+  align-items:center;
+}
+.hero h1{
+  font-size:clamp(30px,4vw,50px);
+  letter-spacing:-.03em;
+}
+.hero p{
+  max-width:28ch;
+  color:#aeb8d7;
+}
+#statusPill{display:none;}
+.grid{
+  grid-template-columns: 430px 1fr;
+  gap:18px;
+}
+.card{
+  border-radius:24px;
+}
+.card-header{
+  padding:20px 22px 12px;
+}
+.card-header h2{
+  font-size:22px;
+  letter-spacing:-.02em;
+}
+.card-header p{
+  margin-top:6px;
+  font-size:14px;
+}
+.card-content{
+  padding:0 22px 22px;
+}
+.section-title{
+  display:none;
+}
+.field{
+  margin-bottom:12px;
+}
+.field label{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:800;
+  color:#9eabd0;
+}
+input, select{
+  min-height:48px;
+  border-radius:16px;
+  font-size:15px;
+}
+#pocketCapacityWrap{
+  display:none !important;
+}
+#primaryHelper{
+  margin:12px 0 0;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(125,211,252,.14);
+  background:rgba(125,211,252,.08);
+  color:#dbeaff;
+  font-size:13px;
+  line-height:1.5;
+}
+details#advancedPanel{
+  margin-top:14px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:rgba(255,255,255,.02);
+  overflow:hidden;
+}
+details#advancedPanel summary{
+  list-style:none;
+  cursor:pointer;
+  padding:15px 16px;
+  font-weight:900;
+}
+details#advancedPanel summary::-webkit-details-marker{display:none;}
+details#advancedPanel .advancedInner{
+  padding:0 16px 16px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+details#advancedPanel .advGroup{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+details#advancedPanel .advGroup:first-child{
+  margin-top:0;
+  padding-top:0;
+  border-top:none;
+}
+
+/* hide noisy top KPI row without removing IDs */
+.metrics{
+  position:absolute !important;
+  left:-99999px !important;
+  width:1px !important;
+  height:1px !important;
+  overflow:hidden !important;
+}
+
+/* polish the useful cards */
+.result-grid{
+  gap:18px;
+}
+.table{
+  font-size:14px;
+}
+.callout{
+  margin-top:14px;
+}
+@media (max-width:1100px){
+  .grid{grid-template-columns:1fr;}
+}
+
+
+/* --- bold visual pass: more depth, less flat --- */
+:root{
+  --bg:#050816;
+  --bg-2:#0a1022;
+  --panel:#0f1730;
+  --panel-2:#162241;
+  --panel-3:#1b2950;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(125,211,252,.22);
+  --text:#f5f8ff;
+  --muted:#a6b4d6;
+  --accent:#7dd3fc;
+  --accent-2:#ff4da0;
+  --accent-3:#8b5cf6;
+  --glow:0 24px 60px rgba(0,0,0,.42);
+  --radius:28px;
+}
+
+body{
+  background:
+    radial-gradient(1000px 560px at 100% 0%, rgba(255,77,160,.15), transparent 33%),
+    radial-gradient(920px 500px at 0% 0%, rgba(125,211,252,.16), transparent 30%),
+    radial-gradient(800px 620px at 50% 100%, rgba(139,92,246,.10), transparent 36%),
+    linear-gradient(180deg, #040714 0%, #09101f 42%, #070d1a 100%);
+  color:var(--text);
+}
+
+.container{
+  max-width:1440px;
+  padding:32px 24px 40px;
+}
+
+.hero{
+  position:relative;
+  margin-bottom:26px;
+  padding:10px 2px 0;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:-18px -18px auto auto;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,77,160,.14), transparent 62%);
+  pointer-events:none;
+  filter:blur(10px);
+}
+
+.hero h1{
+  margin:0 0 10px;
+  font-size:clamp(38px,5vw,68px) !important;
+  line-height:.98 !important;
+  letter-spacing:-.055em !important;
+  font-weight:900;
+  background:linear-gradient(90deg,#ffffff 0%, #dff2ff 38%, #ffc1df 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:none;
+}
+
+.hero p{
+  margin:0;
+  max-width:24ch !important;
+  font-size:15px !important;
+  line-height:1.55;
+  color:#b4c0de !important;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:440px 1fr !important;
+  gap:22px !important;
+  align-items:start;
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+  border-radius:30px !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)),
+    linear-gradient(180deg, #101935 0%, #0d1530 100%) !important;
+  box-shadow:
+    var(--glow),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(125,211,252,.38), rgba(255,77,160,.30), transparent);
+  pointer-events:none;
+}
+
+.card-header{
+  position:relative;
+  padding:24px 24px 14px !important;
+  border-bottom:1px solid rgba(255,255,255,.05) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
+}
+
+.card-header h2{
+  margin:0;
+  font-size:26px !important;
+  line-height:1;
+  letter-spacing:-.04em !important;
+  font-weight:900;
+}
+
+.card-header p{
+  margin:8px 0 0 !important;
+  font-size:14px !important;
+  line-height:1.45;
+  color:#aab7d6 !important;
+}
+
+.card-content{
+  padding:20px 24px 24px !important;
+}
+
+label{
+  font-size:11px !important;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-weight:900 !important;
+  color:#90a0c7 !important;
+}
+
+.field{
+  margin-bottom:14px !important;
+}
+
+input, select{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01)),
+    #0a1226 !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  color:var(--text) !important;
+  min-height:54px !important;
+  border-radius:18px !important;
+  padding:14px 16px !important;
+  font-size:15px !important;
+  font-weight:700;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.03),
+    inset 0 -18px 22px rgba(255,255,255,.015);
+}
+
+input:hover, select:hover{
+  border-color:rgba(125,211,252,.22) !important;
+  transform:translateY(-1px);
+}
+
+input:focus, select:focus{
+  border-color:var(--accent) !important;
+  box-shadow:
+    0 0 0 3px rgba(125,211,252,.14),
+    0 18px 34px rgba(125,211,252,.08),
+    inset 0 1px 0 rgba(255,255,255,.03) !important;
+}
+
+button{
+  min-height:54px !important;
+  border-radius:18px !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  background:
+    linear-gradient(135deg, #8ce6ff 0%, #69cfff 38%, #ff70b2 100%) !important;
+  color:#07111e !important;
+  font-weight:900 !important;
+  font-size:15px !important;
+  letter-spacing:-.01em;
+  box-shadow:
+    0 18px 34px rgba(255,112,178,.18),
+    inset 0 1px 0 rgba(255,255,255,.36);
+  transition:transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.03);
+  box-shadow:
+    0 22px 40px rgba(255,112,178,.24),
+    inset 0 1px 0 rgba(255,255,255,.40);
+}
+
+button:active{
+  transform:translateY(0);
+}
+
+#primaryHelper{
+  margin-top:14px !important;
+  padding:14px 16px !important;
+  border-radius:18px !important;
+  border:1px solid rgba(125,211,252,.14) !important;
+  background:
+    linear-gradient(180deg, rgba(125,211,252,.11), rgba(125,211,252,.05)) !important;
+  color:#ddf2ff !important;
+  font-size:13px !important;
+  line-height:1.45;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+details#advancedPanel{
+  margin-top:16px !important;
+  border-radius:22px !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+details#advancedPanel summary{
+  position:relative;
+  padding:18px 18px !important;
+  font-size:14px !important;
+  font-weight:900 !important;
+  letter-spacing:-.01em;
+  color:var(--text);
+}
+
+details#advancedPanel summary::after{
+  content:"Tune settings";
+  position:absolute;
+  right:18px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#8ea2cb;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+
+details#advancedPanel[open] summary{
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+details#advancedPanel .advancedInner{
+  padding:0 18px 18px !important;
+}
+
+details#advancedPanel .advGroup{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.05) !important;
+}
+
+details#advancedPanel .advGroup:first-child{
+  margin-top:0;
+  padding-top:0;
+  border-top:none !important;
+}
+
+.metrics{
+  position:absolute !important;
+  left:-99999px !important;
+  width:1px !important;
+  height:1px !important;
+  overflow:hidden !important;
+}
+
+.result-grid{
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:20px;
+}
+
+.result-grid > *{
+  min-width:0;
+}
+
+.table-card, .table-wrap, .callout, .footer-note{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)) !important;
+  border:1px solid rgba(255,255,255,.07) !important;
+  border-radius:26px !important;
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.table{
+  border-collapse:separate !important;
+  border-spacing:0 !important;
+  overflow:hidden;
+}
+
+.table thead th{
+  position:sticky;
+  top:0;
+  background:rgba(255,255,255,.03) !important;
+  color:#8ea2cb !important;
+  text-transform:uppercase;
+  letter-spacing:.11em !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+}
+
+.table th, .table td{
+  padding:14px 13px !important;
+  border-bottom:1px solid rgba(255,255,255,.05) !important;
+}
+
+.table tbody tr{
+  transition:background .14s ease, transform .14s ease;
+}
+
+.table tbody tr:hover{
+  background:rgba(255,255,255,.035);
+}
+
+.table tbody td{
+  font-size:14px !important;
+}
+
+.copy-btn{
+  width:32px !important;
+  height:32px !important;
+  border-radius:12px !important;
+  background:rgba(255,255,255,.04) !important;
+  color:var(--text) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
+}
+
+.copy-btn:hover{
+  transform:none !important;
+  background:rgba(125,211,252,.12) !important;
+}
+
+.callout, .footer-note{
+  padding:16px 18px !important;
+  color:#c8d6f3 !important;
+}
+
+.result-grid .card-header h2,
+.result-grid h3{
+  font-size:22px !important;
+  letter-spacing:-.03em !important;
+}
+
+.result-grid .subtle,
+.result-grid .muted{
+  color:#9fb0d5 !important;
+}
+
+@media (max-width:1180px){
+  .grid{
+    grid-template-columns:1fr !important;
+  }
+  .result-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:760px){
+  .container{
+    padding:18px 14px 28px;
+  }
+  .hero h1{
+    font-size:42px !important;
+  }
+  .hero p{
+    max-width:unset !important;
+  }
+  .card-header{
+    padding:20px 18px 12px !important;
+  }
+  .card-content{
+    padding:16px 18px 18px !important;
+  }
+}
+
+</style>
 </head>
 <body>
   <div class="container">
     <div class="hero">
       <div>
-        <h1>Vodka Production Calculator</h1>
-        <p>Single-file calculator for pocket optimisation, production planning, yield scaling, multi-run totals, and profit-per-hour modelling. Change any assumptions live and the dashboard updates instantly.</p>
-        <div class="badge-row">
+        <h1>MandemZ Vodka Pocket Optimizer</h1>
+        <p>Choose the step and enter your current pocket weight.</p>
+        <div class="badge-row" style="display:none">
           <div class="badge">1 file</div>
           <div class="badge">HTML + CSS + JS</div>
           <div class="badge">Live optimiser</div>
@@ -429,7 +1006,7 @@
             </div>
             <div class="field">
               <label for="speedMultiplier">Mashing/Fermenting speed multiplier</label>
-              <input id="speedMultiplier" type="number" step="0.01" value="3" />
+              <input id="speedMultiplier" type="number" step="0.01" value="5.2" />
             </div>
             <div class="field full">
               <div class="checkbox-row">
@@ -487,24 +1064,24 @@
             <div class="value" id="mAvailableWeight">0.000 kg</div>
             <div class="sub" id="mWeightUsage">0.000 kg used</div>
           </div>
-          <div class="hidden">
+          <div class="metric">
             <div class="label">Max Full Crafts / Run</div>
             <div class="value" id="mCrafts">0</div>
             <div class="sub" id="mPrimaryOutput">0 primary output</div>
           </div>
-          <div class="hidden">
+          <div class="metric">
             <div class="label">Expected Revenue / Run</div>
             <div class="value" id="mRevenueRun">$0</div>
             <div class="sub" id="mRevenueHour">$0 per hour</div>
           </div>
-          <div class="hidden">
+          <div class="metric">
             <div class="label">Expected Revenue / Total</div>
             <div class="value" id="mRevenueTotal">$0</div>
             <div class="sub" id="mTotalTime">0h 0m 0s total time</div>
           </div>
-          <div class="hidden">
+          <div class="metric">
             <div class="label">True End-to-End Profit / Hour</div>
-            <div class="value" id="mEndToEndPH"></div>
+            <div class="value" id="mEndToEndPH">$0</div>
             <div class="sub" id="mEndToEndTime">0h 0m 0s from potatoes to bottles</div>
           </div>
         </div>
@@ -824,7 +1401,20 @@
         tr.innerHTML = `
           <td>${item.name}</td>
           <td class="num">${formatNumber(item.qty, 0)}</td>
-          <td class="num">${formatNumber(perRunQty, 0)}</td>
+          <td class="num">
+            <div class="copy-cell">
+              <span>${formatNumber(perRunQty, 0)}</span>
+              <button class="copy-btn" type="button" data-copy="${perRunQty}" title="Copy per run quantity" aria-label="Copy ${item.name} per run quantity">
+                <svg class="copy-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9" y="7" width="10" height="13" rx="2"></rect>
+                  <path d="M15 7V5.5a1.5 1.5 0 0 0-1.5-1.5h-7A1.5 1.5 0 0 0 5 5.5v10A1.5 1.5 0 0 0 6.5 17H9"></path>
+                </svg>
+                <svg class="copy-check" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 12.5l4 4 8-9"></path>
+                </svg>
+              </button>
+            </div>
+          </td>
           <td class="num">${formatNumber(perRunKg, 3)}</td>
           <td class="num">${formatNumber(allRunsQty, 0)}</td>
         `;
@@ -840,6 +1430,25 @@
       $('statusPill').className = 'pill ' + (r.crafts > 0 ? 'good' : 'warn');
     }
 
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.copy-btn');
+      if (!btn) return;
+
+      const value = btn.getAttribute('data-copy') || '';
+
+      try {
+        await navigator.clipboard.writeText(value);
+        btn.classList.add('copied');
+
+        clearTimeout(btn._copyTimer);
+        btn._copyTimer = setTimeout(() => {
+          btn.classList.remove('copied');
+        }, 900);
+      } catch (err) {
+        console.error('Copy failed', err);
+      }
+    });
+
     fields.forEach(id => {
       const el = $(id);
       el.addEventListener('input', render);
@@ -848,5 +1457,118 @@
 
     render();
   </script>
+
+<script>
+(function(){
+  function ready(fn){
+    if(document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  ready(function(){
+    const byId = id => document.getElementById(id);
+
+    // fix max pocket at 38 without removing the real input the calculator uses
+    const pocket = byId('pocketCapacity');
+    if (pocket) {
+      pocket.value = '38';
+      pocket.readOnly = true;
+      const wrap = pocket.closest('.field');
+      if (wrap) wrap.id = 'pocketCapacityWrap';
+    }
+
+    const leftCard = document.querySelector('.grid > .card');
+    if (!leftCard) return;
+
+    const headerH2 = leftCard.querySelector('.card-header h2');
+    const headerP = leftCard.querySelector('.card-header p');
+    if (headerH2) headerH2.textContent = 'Current Fill';
+    if (headerP) headerP.textContent = 'Choose the step and your current pocket weight.';
+
+    const content = leftCard.querySelector('.card-content');
+    if (!content) return;
+
+    // prevent double-run if reopened
+    if (document.getElementById('advancedPanel')) return;
+
+    const currentField = byId('currentWeight') ? byId('currentWeight').closest('.field') : null;
+    const stepField = byId('step') ? byId('step').closest('.field') : null;
+    const runsField = byId('runs') ? byId('runs').closest('.field') : null;
+    const saleField = byId('salePrice') ? byId('salePrice').closest('.field') : null;
+    const yieldField = byId('yieldMultiplier') ? byId('yieldMultiplier').closest('.field') : null;
+
+    if (currentField) {
+      const l = currentField.querySelector('label');
+      if (l) l.textContent = 'Current pocket weight (kg)';
+    }
+    if (stepField) {
+      const l = stepField.querySelector('label');
+      if (l) l.textContent = 'Current step';
+    }
+
+    const main = document.createElement('div');
+    main.id = 'mainInputs';
+
+    if (stepField) main.appendChild(stepField);
+    if (currentField) main.appendChild(currentField);
+
+    const helper = document.createElement('div');
+    helper.id = 'primaryHelper';
+    helper.textContent = 'Max pocket weight is fixed at 38 kg.';
+    main.appendChild(helper);
+
+    const advanced = document.createElement('details');
+    advanced.id = 'advancedPanel';
+    advanced.innerHTML = '<summary>Advanced</summary><div class="advancedInner"></div>';
+    const advancedInner = advanced.querySelector('.advancedInner');
+
+    // move everything except main fields into Advanced, while keeping original ids/logic intact
+    const fields = Array.from(content.querySelectorAll('.field, .footer-note, .checkbox-row'));
+    const used = new Set([currentField, stepField]);
+    fields.forEach(el => {
+      if (!el || used.has(el)) return;
+      const group = document.createElement('div');
+      group.className = 'advGroup';
+      group.appendChild(el);
+      advancedInner.appendChild(group);
+    });
+
+    // the checkbox-row sits inside a full field in original, so if not moved by above, move its field too
+    const useSpeed = byId('useSpeedup');
+    if (useSpeed) {
+      const speedField = useSpeed.closest('.field');
+      if (speedField && !advancedInner.contains(speedField) && !used.has(speedField)) {
+        const group = document.createElement('div');
+        group.className = 'advGroup';
+        group.appendChild(speedField);
+        advancedInner.appendChild(group);
+      }
+    }
+
+    // move remaining standalone section wrappers / form-grids by id elements we know
+    const extras = [
+      byId('yieldMultiplier') && byId('yieldMultiplier').closest('.form-grid'),
+      byId('timeMashing') && byId('timeMashing').closest('.form-grid'),
+      byId('wPotato') && byId('wPotato').closest('.form-grid'),
+      content.querySelector('.footer-note')
+    ].filter(Boolean);
+
+    extras.forEach(el => {
+      if (!advancedInner.contains(el)) {
+        const group = document.createElement('div');
+        group.className = 'advGroup';
+        group.appendChild(el);
+        advancedInner.appendChild(group);
+      }
+    });
+
+    // clear content and rebuild cleanly
+    content.innerHTML = '';
+    content.appendChild(main);
+    content.appendChild(advanced);
+  });
+})();
+</script>
+
 </body>
 </html>
